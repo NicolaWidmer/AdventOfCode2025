@@ -48,8 +48,10 @@ var
   Line: string;
   Parts: TStringArray;
   Points: array of TPoint;
-  n,i,j,k,cur: Int64;
+  n,i,j,k,cur,rounds: Int64;
+  pari,parj: Int64;
   ans1,ans2: Int64;
+  parents,componentsizes: array of Integer;
 
 begin
   AssignFile(F, '../Input/Day9.in');
@@ -94,6 +96,8 @@ begin
     end;
   
   end;
+
+
 
   WriteLn(ans1);
   WriteLn(ans2);
