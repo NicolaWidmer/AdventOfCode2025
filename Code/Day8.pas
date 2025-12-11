@@ -31,6 +31,29 @@ begin
   if a > 0 then Result := a else Result := -a;
 end;
 
+function dist(p1,p2: TPoint): Int64;
+var
+  dx, dy, dz: Int64;
+begin
+  dx := p1.x - p2.x;
+  dy := p1.y - p2.y;
+  dz := p1.z - p2.z;
+  Result := (dx * dx) + (dy * dy) + (dz * dz);
+end;
+
+function CompareIndexPairs(const a,b:TIndexPair): Integer;
+begin
+    if (dist(a.p1,a.p2) - dist(b.p1,b.p2) < 0) then
+     Result := -1
+    else if (dist(a.p1,a.p2) - dist(b.p1,b.p2) > 0) then
+     Result := 1
+    else
+     Result := 0;
+end;
+
+
+// sorts implemented by AI
+
 procedure BubbleSort(var A: array of Integer);
 var
   i, j, Temp: Integer;
@@ -61,26 +84,6 @@ begin
     if not Swapped then
       Break;
   end;
-end;
-
-function dist(p1,p2: TPoint): Int64;
-var
-  dx, dy, dz: Int64;
-begin
-  dx := p1.x - p2.x;
-  dy := p1.y - p2.y;
-  dz := p1.z - p2.z;
-  Result := (dx * dx) + (dy * dy) + (dz * dz);
-end;
-
-function CompareIndexPairs(const a,b:TIndexPair): Integer;
-begin
-    if (dist(a.p1,a.p2) - dist(b.p1,b.p2) < 0) then
-     Result := -1
-    else if (dist(a.p1,a.p2) - dist(b.p1,b.p2) > 0) then
-     Result := 1
-    else
-     Result := 0;
 end;
 
 function Partition(var A: array of TIndexPair; L, R: Integer): Integer;
