@@ -103,10 +103,9 @@ begin
 
     Inc(n);
   end;
-  resetPaths(paths);
+
   ans1 := dfs2(stringToIndex('you'),g,paths,stringToIndex('out'));
 
-  
   ans2 := Max64(
     dfs2(stringToIndex('svr'),g,paths,stringToIndex('dac')) * dfs2(stringToIndex('dac'),g,paths,stringToIndex('fft')) * dfs2(stringToIndex('fft'),g,paths,stringToIndex('out')),
     dfs2(stringToIndex('svr'),g,paths,stringToIndex('fft')) * dfs2(stringToIndex('fft'),g,paths,stringToIndex('dac')) * dfs2(stringToIndex('dac'),g,paths,stringToIndex('out'))

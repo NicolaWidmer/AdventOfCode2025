@@ -6,91 +6,99 @@ uses
   SysUtils;
 
 
+function getNumber(col:Int64; allLines: array of string): Int64;
+var
+  i,ans:Int64;
+begin
+  ans := 0;
+  for i := 0 to (High(allLines)-1) do
+  begin
+    if allLines[i][col] <> ' ' then
+      ans := ans*10 + (ord(allLines[i][col]) - ord('0'));
+  end;
+  Result := ans;
+end;
+
+
 var
   F: TextFile;
   Line: string;
   Parts: TStringArray;
-  Ranges,mergedRanges: array of TRange;
-  n,num,i,j,n2: Int64;
+  s: string;
+  Lines: array of TStringArray;
+  allLines: array of string;
+  n,i,j,cur,cur_num: Int64;
   ans1,ans2: Int64;
-  inRange,found: Boolean;
+  cur_op: char;
 
 begin
-  AssignFile(F, '../Input/Day5.in');
+  AssignFile(F, '../Input/Day6.in');
   Reset(F);
 
   ans1 := 0;
   ans2 := 0;
   n := 0;
 
-  ReadLn(F, Line);
-  Line := Trim(Line);
-
-  while Line <> '' do
-  begin
-    Parts := Line.Split(['-']);
-
-    SetLength(Ranges, n + 1);
-    Ranges[n].lo := StrToInt64(Parts[0]);
-    Ranges[n].hi := StrToInt64(Parts[1]);
-
-    Inc(n);
-
-    ReadLn(F, Line);
-    Line := Trim(Line);
-  end;
-
   while not Eof(F) do
   begin
     ReadLn(F, Line);
-    Line := Trim(Line);
 
-    num := StrToInt64(Line);
+    SetLength(Lines, n + 1);
+    SetLength(allLines, n + 1);
 
-    inRange := False;
-
-    for i:= 0 to (n-1) do
+    allLines[n] := Line;
+    Parts := Line.Split([' ']);
+  
+    for s in Parts do
     begin
-        if (num >= Ranges[i].lo) and (num <= Ranges[i].hi) then
-            inRange := True;
+      if Length(S) > 0 then
+      begin
+        SetLength(Lines[n], Length(Lines[n]) + 1);
+        Lines[n][High(Lines[n])] := s;
+      end;
     end;
 
-
-    if inRange then
-        Inc(ans1);
-
+    Inc(n);
   end;
 
-  n2 := 0;
-
-  for i := 0 to (n-1) do
+  for i := 0 to (Length(Lines[n-1]) - 1) do
   begin
-    found := False;
-
-    for j := (i+1) to (n-1) do
+    cur := StrToInt64(Lines[0][i]);
+    for j := 1 to (High(Lines) - 1) do
     begin
-        if (Ranges[i].lo <= Ranges[j].hi) and (Ranges[j].lo <= Ranges[i].hi) then
-        begin
-            Ranges[j].hi := Max64(Ranges[j].hi,Ranges[i].hi);
-            Ranges[j].lo := Min64(Ranges[j].lo,Ranges[i].lo);
-            found := True;
-            continue;
-        end;
+      if Lines[n-1][i] = '*' then
+        cur := cur * StrToInt64(Lines[j][i])
+      else
+        cur := cur + StrToInt64(Lines[j][i]);
     end;
-
-    if not found then
-    begin
-        SetLength(mergedRanges, n2 + 1);
-        mergedRanges[n2].lo := Ranges[i].lo;
-        mergedRanges[n2].hi := Ranges[i].hi;
-        Inc(n2);
-    end;
+    ans1 := ans1 + cur;
   end;
 
-  for i:= 0 to (n2-1) do
+  cur := 0;
+  cur_op := ' ';
+
+  for i := 1 to High(allLines[0]) do
   begin
-    ans2 := ans2 + (mergedRanges[i].hi - mergedRanges[i].lo + 1)
+    cur_num := getNumber(i,allLines);
+    if allLines[n - 1][i] <> ' ' then
+    begin
+      cur_op :=  allLines[n - 1][i];
+      ans2 := ans2 + cur;
+      cur := cur_num;
+    end
+    else if cur_num <> 0 then
+    begin
+      if cur_op = '*' then
+      begin
+        cur := cur * getNumber(i,allLines);
+      end
+      else
+        cur := cur + getNumber(i,allLines);
+    end;
   end;
+
+  ans2 := ans2 + cur;
+  
 
   WriteLn(ans1);
   WriteLn(ans2);
